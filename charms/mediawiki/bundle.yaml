@@ -1,0 +1,30 @@
+services:
+  haproxy:
+    charm: cs:trusty/haproxy-13
+    num_units: 1
+    bindings:
+        website: public
+        reverseproxy: internal
+        peer: internal
+    expose: true
+  mediawiki:
+    charm: cs:trusty/mediawiki-3
+    num_units: 1
+    bindings:
+      cache: internal
+      website: internal
+      db: db
+    options:
+      name: MAAS + Juju Network Spaces Wiki
+  mysql:
+    charm: cs:trusty/mysql-29
+    num_units: 1
+    bindings:
+      db: db
+      cluster: internal
+series: trusty
+relations:
+- - haproxy:reverseproxy
+  - mediawiki:website
+- - mediawiki:db
+  - mysql:db
